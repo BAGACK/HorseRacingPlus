@@ -288,7 +288,7 @@ public class Main extends JavaPlugin implements Listener{
                 	int bef = Integer.parseInt(d);
                 	if(bef > 0){
                 		s.setLine(3, Integer.toString(bef - 1) + "/" + Integer.toString(as.getSpawnsFromArena(arena).size()));
-                		s.setLine(2, "ง2Join");
+                		s.setLine(2, "ยง2Join");
                 		s.update();
                 	}
                 }
@@ -311,7 +311,7 @@ public class Main extends JavaPlugin implements Listener{
 	    	Sign s_ = as.getSignFromArena(arena);
 	    	// update sign:
             if(s_ != null && s_.getLine(3) != ""){
-            	s_.setLine(2, "ง2Join");
+            	s_.setLine(2, "ยง2Join");
         		s_.setLine(3, Integer.toString(0) + "/" + Integer.toString(as.getSpawnsFromArena(arena).size()));
         		s_.update();
             }
@@ -323,15 +323,15 @@ public class Main extends JavaPlugin implements Listener{
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 		if(cmd.getName().equalsIgnoreCase("hr") || cmd.getName().equalsIgnoreCase("horseracing")){
  		if(args.length < 1){
- 			sender.sendMessage(getConfig().getString("strings.help1").replaceAll("&", "ง"));
- 			sender.sendMessage(getConfig().getString("strings.help2").replaceAll("&", "ง"));
- 			sender.sendMessage(getConfig().getString("strings.help3").replaceAll("&", "ง"));
- 			sender.sendMessage(getConfig().getString("strings.help4").replaceAll("&", "ง"));
- 			sender.sendMessage(getConfig().getString("strings.help5").replaceAll("&", "ง"));
- 			sender.sendMessage(getConfig().getString("strings.help6").replaceAll("&", "ง"));
+ 			sender.sendMessage(getConfig().getString("strings.help1").replaceAll("&", "ยง"));
+ 			sender.sendMessage(getConfig().getString("strings.help2").replaceAll("&", "ยง"));
+ 			sender.sendMessage(getConfig().getString("strings.help3").replaceAll("&", "ยง"));
+ 			sender.sendMessage(getConfig().getString("strings.help4").replaceAll("&", "ยง"));
+ 			sender.sendMessage(getConfig().getString("strings.help5").replaceAll("&", "ยง"));
+ 			sender.sendMessage(getConfig().getString("strings.help6").replaceAll("&", "ยง"));
  		}else{
  			if(!(sender instanceof Player)){
- 				sender.sendMessage("งcYou need to be a player to execute this command.");
+ 				sender.sendMessage("ยงcYou need to be a player to execute this command.");
  				return true;
  			}
  			Player p = (Player)sender;
@@ -344,7 +344,7 @@ public class Main extends JavaPlugin implements Listener{
     	    			this.getConfig().set(args[1] + ".world", p.getWorld().getName());
     	    			this.saveConfig();
     	    			String arenaname = args[1];
-    	    			sender.sendMessage(getConfig().getString("strings.createrace").replaceAll("&", "ง"));
+    	    			sender.sendMessage(getConfig().getString("strings.createrace").replaceAll("&", "ยง"));
     	    			gamestarted.put(args[1], false);
     	    			arenas.add(args[1]);
  					}
@@ -361,7 +361,7 @@ public class Main extends JavaPlugin implements Listener{
  			    		getConfig().set(args[1] + ".lobbyspawn.yaw", l.getYaw());
  			    		
     		    		this.saveConfig();
-    		    		sender.sendMessage(getConfig().getString("strings.lobbycreated").replaceAll("&", "ง"));
+    		    		sender.sendMessage(getConfig().getString("strings.lobbycreated").replaceAll("&", "ยง"));
  					}
  				}else if(action.equalsIgnoreCase("setspawn") && args.length > 2){
  					// setspawn
@@ -377,7 +377,7 @@ public class Main extends JavaPlugin implements Listener{
  			    		getConfig().set(args[2] + ".spawn" + count + ".yaw", l.getYaw());
  			    		
  			    		this.saveConfig();
- 			    		sender.sendMessage(getConfig().getString("strings.spawn").replaceAll("&", "ง"));
+ 			    		sender.sendMessage(getConfig().getString("strings.spawn").replaceAll("&", "ยง"));
  					}
  				}else if(action.equalsIgnoreCase("setspectate") && args.length > 1){
  					// setspectatespawn
@@ -389,7 +389,7 @@ public class Main extends JavaPlugin implements Listener{
  			    		getConfig().set(args[1] + ".spectate.z", (int)l.getZ());
  			    		getConfig().set(args[1] + ".spectate.world", p.getWorld().getName());
  			    		this.saveConfig();
- 			    		sender.sendMessage("ง2Spectator platform successfully created!");
+ 			    		sender.sendMessage("ยง2Spectator platform successfully created!");
  					}
  				}else if(action.equalsIgnoreCase("spectate") && args.length > 1){
  					if(!args[1].equalsIgnoreCase("") && gamestarted.get(args[1]) && getConfig().isSet(args[1] + ".spectate")){
@@ -399,11 +399,11 @@ public class Main extends JavaPlugin implements Listener{
  							p.teleport(l);
  							specp.put(p, arena);
  						}else{
- 							p.sendMessage("ง4This arena doesn't support spectating. Ask an operator to set up a platform by using /hr setspectate [arena].");
+ 							p.sendMessage("ยง4This arena doesn't support spectating. Ask an operator to set up a platform by using /hr setspectate [arena].");
  						}
-							sender.sendMessage("ง2You are now spectating in " + args[1] + ". Use ง3/hr leavespectate ง2to leave the minigame.");
+							sender.sendMessage("ยง2You are now spectating in " + args[1] + ". Use ยง3/hr leavespectate ยง2to leave the minigame.");
  					}else{
- 						p.sendMessage("ง4The game hasn't started yet!");
+ 						p.sendMessage("ยง4The game hasn't started yet!");
  					}
  				}else if(action.equalsIgnoreCase("leavespectate")){
  					if(specp.containsKey(p)){
@@ -414,14 +414,14 @@ public class Main extends JavaPlugin implements Listener{
  							specp.remove(p);
  						}
  					}else{
- 						p.sendMessage("ง4You aren't in spectating mode.");
+ 						p.sendMessage("ยง4You aren't in spectating mode.");
  					}
  				}else if(action.equalsIgnoreCase("removerace") && args.length > 1){
  					// removearena
  					if(p.hasPermission("horseracing.remove")){
  						this.getConfig().set(args[1], null);
     	    			this.saveConfig();
-    	    			sender.sendMessage(getConfig().getString("strings.raceremoved").replaceAll("&", "ง"));
+    	    			sender.sendMessage(getConfig().getString("strings.raceremoved").replaceAll("&", "ยง"));
  					}
  				}else if(action.equalsIgnoreCase("removespawn") && args.length > 2){
  					// removearena
@@ -430,14 +430,14 @@ public class Main extends JavaPlugin implements Listener{
  						String count = args[2];
  						this.getConfig().set(arena + ".spawn" + args[2], null);
     	    			this.saveConfig();
-    	    			sender.sendMessage("ง4Spawnpoint removed.");
+    	    			sender.sendMessage("ยง4Spawnpoint removed.");
  					}
  				}else if(action.equalsIgnoreCase("setfinish") && args.length > 1){
  					if(p.hasPermission("horseracing.setfinish")){
 	 					creation.put(p, args[1]);	
 	 					p.getInventory().addItem(new ItemStack(Material.WOOD_SPADE, 1));
 	 					p.updateInventory();
-	 					p.sendMessage(getConfig().getString("strings.creation").replaceAll("&", "ง"));
+	 					p.sendMessage(getConfig().getString("strings.creation").replaceAll("&", "ยง"));
  					}
  					
  				}else if(action.equalsIgnoreCase("leave")){
@@ -474,7 +474,7 @@ public class Main extends JavaPlugin implements Listener{
 	                        			if(canceltask.get(p) != null){
 		                        			getServer().getScheduler().cancelTask(canceltask.get(p));
 	                        			}
-		                        		s_.setLine(2, "ง2Join");
+		                        		s_.setLine(2, "ยง2Join");
 			                        	s_.update();
 			                        	if(s_ != null){
 											s_.setLine(3, Integer.toString(0) + "/" + Integer.toString(as.getSpawnsFromArena(arena).size()));
@@ -495,7 +495,7 @@ public class Main extends JavaPlugin implements Listener{
 	 						final Location t = as.getLocFromArena(arena, "lobbyspawn");
 	             			p.teleport(t);
 	             			arenap.remove(p);
-	             			p.sendMessage(getConfig().getString("strings.left").replaceAll("&", "ง"));
+	             			p.sendMessage(getConfig().getString("strings.left").replaceAll("&", "ยง"));
 	             			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 	            				//int secs = 11;
 	            				@Override
@@ -525,7 +525,7 @@ public class Main extends JavaPlugin implements Listener{
 	    		             					}
 	    		             				}
 	    		             			}
-		                        		s_.setLine(2, "ง2Join");
+		                        		s_.setLine(2, "ยง2Join");
 			                        	s_.update();
 			                        	if(s_ != null){
 											s_.setLine(3, Integer.toString(0) + "/" + Integer.toString(as.getSpawnsFromArena(arena).size()));
@@ -553,7 +553,7 @@ public class Main extends JavaPlugin implements Listener{
 				    	// update sign:
 	                    if(s_ != null && s_.getLine(3) != ""){
 	                    	s_.setLine(3, Integer.toString(0) + "/" + Integer.toString(as.getSpawnsFromArena(arena).size()));
-	                    	s_.setLine(2, "ง2Join");
+	                    	s_.setLine(2, "ยง2Join");
 	                    	s_.update();
 	                    }
 	                    
@@ -604,7 +604,7 @@ public class Main extends JavaPlugin implements Listener{
 		 						
 		 						final Sign s = s_;
 			                    
-		 						if(s != null && s.getLine(2).equalsIgnoreCase("ง2Starting") || s.getLine(2).equalsIgnoreCase("ง2Join")){
+		 						if(s != null && s.getLine(2).equalsIgnoreCase("ยง2Starting") || s.getLine(2).equalsIgnoreCase("ยง2Join")){
 			                		// update sign:
 				                    if(s.getLine(3) != ""){
 				                    	String d = s.getLine(3).split("/")[0];
@@ -663,7 +663,7 @@ public class Main extends JavaPlugin implements Listener{
 		 	                		// teleport and spawn horse
 		 		                	arenap.put(p, arena);
 		 		                	
-		 		                	p.sendMessage("ง2You have entered a Horse Race!");
+		 		                	p.sendMessage("ยง2You have entered a Horse Race!");
 		 		                	
 		 		                	String count = Integer.toString(arenaspawn.get(arena));
 		 		                	
@@ -677,7 +677,7 @@ public class Main extends JavaPlugin implements Listener{
 		 		                	}, 20);
 		 	                	} 
 	 						}else{
-	 							p.sendMessage("ง4This arena is not set up properly!");
+	 							p.sendMessage("ยง4This arena is not set up properly!");
 	 						}
 	 						
 	 						
@@ -695,7 +695,7 @@ public class Main extends JavaPlugin implements Listener{
 							try{
 								amount_ = Integer.parseInt(amount);
 							}catch(Exception e){
-								sender.sendMessage("ง4Usage: /hr bet [amount] [name]");
+								sender.sendMessage("ยง4Usage: /hr bet [amount] [name]");
 								cont1 = false;
 							}
 							if(cont1){
@@ -709,9 +709,9 @@ public class Main extends JavaPlugin implements Listener{
 									}
 									bet_player.put(p, Bukkit.getPlayer(player));
 									bet_amount.put(p, amount_);
-									sender.sendMessage("ง2Thank you for your bet! If this players wins, you'll get the doubled amount back.");
+									sender.sendMessage("ยง2Thank you for your bet! If this players wins, you'll get the doubled amount back.");
 								}else{
-									sender.sendMessage("ง4You can't bet so much! The max amount is " + Integer.toString( getConfig().getInt("config.max_bet_amount")) + ".");
+									sender.sendMessage("ยง4You can't bet so much! The max amount is " + Integer.toString( getConfig().getInt("config.max_bet_amount")) + ".");
 								}	
 							}
 							
@@ -720,7 +720,7 @@ public class Main extends JavaPlugin implements Listener{
  				}else if(action.equalsIgnoreCase("list")){
  					// list
  					if(p.hasPermission("horseracing.list")){
- 						p.sendMessage("ง3 -- Arenas --");
+ 						p.sendMessage("ยง3 -- Arenas --");
  						ArrayList<String> keys = new ArrayList<String>();
     			        keys.addAll(getConfig().getKeys(false));
     			        try{
@@ -735,7 +735,7 @@ public class Main extends JavaPlugin implements Listener{
     			        }
     			        for(int i = 0; i < keys.size(); i++){
     			        	if(!keys.get(i).equalsIgnoreCase("config") && !keys.get(i).equalsIgnoreCase("strings")){
-    			        		sender.sendMessage("ง2" + keys.get(i));
+    			        		sender.sendMessage("ยง2" + keys.get(i));
     			        	}
     			        }
  					}
@@ -747,9 +747,9 @@ public class Main extends JavaPlugin implements Listener{
     					}else{
     						gambling = false;
     					}
-    					sender.sendMessage(getConfig().getString("strings.reload").replaceAll("&", "ง"));
+    					sender.sendMessage(getConfig().getString("strings.reload").replaceAll("&", "ยง"));
  					}else{
- 						sender.sendMessage(getConfig().getString("strings.nopermission").replaceAll("&", "ง"));
+ 						sender.sendMessage(getConfig().getString("strings.nopermission").replaceAll("&", "ยง"));
  					}
  				}else if(action.equalsIgnoreCase("reset") && args.length > 0){
  					if(args.length > 1){
@@ -778,7 +778,7 @@ public class Main extends JavaPlugin implements Listener{
 		    	            				}
 		    	            			}, 20);
 
-		        			    		p.sendMessage("ง4The arena just got reset by an operator - leaving game..");
+		        			    		p.sendMessage("ยง4The arena just got reset by an operator - leaving game..");
 		    	    				}
 		    	    			}
 		    	    			
@@ -791,19 +791,19 @@ public class Main extends JavaPlugin implements Listener{
 	        			    	// update sign: 
 	        		            if(s != null && s.getLine(3) != ""){
 	    		            		s.setLine(3, Integer.toString(0) + "/" + Integer.toString(as.getSpawnsFromArena(arena).size()));
-	    		            		s.setLine(2, "ง2Join");
+	    		            		s.setLine(2, "ยง2Join");
 	    		            		s.update();
 	    		            		secs_.remove(arena);
 	        		            }
-	        		            sender.sendMessage("ง2Arena reset.");	
+	        		            sender.sendMessage("ยง2Arena reset.");	
 	    	    			}else{
-	    	    				sender.sendMessage("ง4This arena couldn't be found.");
+	    	    				sender.sendMessage("ยง4This arena couldn't be found.");
 	    	    			}
     	                }else{
-    	                	sender.sendMessage(getConfig().getString("strings.nopermission").replaceAll("&", "ง"));
+    	                	sender.sendMessage(getConfig().getString("strings.nopermission").replaceAll("&", "ยง"));
     	                }	
 					}else{
-						sender.sendMessage("ง4Please provide an arenaname! Usage: /sb reset [name]");
+						sender.sendMessage("ยง4Please provide an arenaname! Usage: /sb reset [name]");
 					}
 				}else if(action.equalsIgnoreCase("leaderboards") || action.equalsIgnoreCase("lb") || action.equalsIgnoreCase("stats")){
  					ArrayList<String> keys = new ArrayList<String>();
@@ -812,7 +812,7 @@ public class Main extends JavaPlugin implements Listener{
  						keys.addAll(getConfig().getConfigurationSection("stats").getKeys(false));
  					}catch (Exception e){
  						cont1 = false;
- 						sender.sendMessage("ง4There are no recorded games yet.");
+ 						sender.sendMessage("ยง4There are no recorded games yet.");
  					}
  			        
  					if(cont1){
@@ -827,7 +827,7 @@ public class Main extends JavaPlugin implements Listener{
  			    	
 				}else if(action.equalsIgnoreCase("shop")){
 					Player p_ = (Player)sender;
-					sender.sendMessage("ง3 -- HorseRacing Shop -- ");
+					sender.sendMessage("ยง3 -- HorseRacing Shop -- ");
 					if(!getConfig().contains("shop." + p_.getName() + ".jump")){
 						getConfig().set("shop." + p_.getName() + ".jump", 0);
 					}
@@ -837,9 +837,9 @@ public class Main extends JavaPlugin implements Listener{
 					if(!getConfig().contains("shop." + p_.getName() + ".barding")){
 						getConfig().set("shop." + p_.getName() + ".barding", false);
 					}
-					sender.sendMessage("ง2Jump potions: " + Integer.toString(getConfig().getInt("shop." + p_.getName() + ".jump")));
-					sender.sendMessage("ง2Speed potions: " + Integer.toString(getConfig().getInt("shop." + p_.getName() + ".speed")));
-					sender.sendMessage("ง2Barding: " + Boolean.toString(getConfig().getBoolean("shop." + p_.getName() + ".barding")));
+					sender.sendMessage("ยง2Jump potions: " + Integer.toString(getConfig().getInt("shop." + p_.getName() + ".jump")));
+					sender.sendMessage("ยง2Speed potions: " + Integer.toString(getConfig().getInt("shop." + p_.getName() + ".speed")));
+					sender.sendMessage("ยง2Barding: " + Boolean.toString(getConfig().getBoolean("shop." + p_.getName() + ".barding")));
  					
 					final Plugin plugin = this;
  					final Main main = this;
@@ -860,10 +860,10 @@ public class Main extends JavaPlugin implements Listener{
 	 		  	                    }else{
 	 		  	                    	getConfig().set("shop." + p.getName() + ".jump", 3);
 	 		  	                    }
- 		                    		p.sendMessage("ง2You bought a Jump Effect!");
+ 		                    		p.sendMessage("ยง2You bought a Jump Effect!");
  		                            plugin.saveConfig();
  		                    	}else{
- 		                    		p.sendMessage("ง4You don't have enough money!");
+ 		                    		p.sendMessage("ยง4You don't have enough money!");
  		                    	}
  		                    }else if(d.equalsIgnoreCase("Speed Effect")){
  		                    	int price = getConfig().getInt("shop.speedpotion_price");
@@ -877,10 +877,10 @@ public class Main extends JavaPlugin implements Listener{
 	 		  	                    }else{
 	 		  	                    	getConfig().set("shop." + p.getName() + ".speed", 3);
 	 		  	                    }
- 		                    		p.sendMessage("ง2You bought a Speed Effect!");
+ 		                    		p.sendMessage("ยง2You bought a Speed Effect!");
  		                            plugin.saveConfig();
  		                    	}else{
- 		                    		p.sendMessage("ง4You don't have enough money!");
+ 		                    		p.sendMessage("ยง4You don't have enough money!");
  		                    	}
  		                    }else if(d.equalsIgnoreCase("Diamond Barding")){
  		                    	int price = getConfig().getInt("shop.barding_price");
@@ -890,10 +890,10 @@ public class Main extends JavaPlugin implements Listener{
  	 		  	                    	p.sendMessage(String.format("An error occured: %s", r.errorMessage));
  	 		  	                    }
  		                    		getConfig().set("shop." + p.getName() + ".barding", true);
- 		                    		p.sendMessage("ง2You bought a Diamond Barding!");
+ 		                    		p.sendMessage("ยง2You bought a Diamond Barding!");
  		                            plugin.saveConfig();
  		                    	}else{
- 		                    		p.sendMessage("ง4You don't have enough money!");
+ 		                    		p.sendMessage("ยง4You don't have enough money!");
  		                    	}
  		                    }
  		                    event.setWillClose(true);
@@ -906,11 +906,11 @@ public class Main extends JavaPlugin implements Listener{
  		        	iconm.open((Player) sender);
 				}else if(action.equalsIgnoreCase("stats") && args.length > 1){
  					String pname = args[1];
-					sender.sendMessage("ง3HorseRacing Stats for " + pname + ":");
-					sender.sendMessage("ง2Won games: " + Integer.toString(getConfig().getInt("stats." + pname + ".won")));
-					sender.sendMessage("ง2Lost games: " + Integer.toString(getConfig().getInt("stats." + pname + ".lost")));
+					sender.sendMessage("ยง3HorseRacing Stats for " + pname + ":");
+					sender.sendMessage("ยง2Won games: " + Integer.toString(getConfig().getInt("stats." + pname + ".won")));
+					sender.sendMessage("ยง2Lost games: " + Integer.toString(getConfig().getInt("stats." + pname + ".lost")));
 				}else{
- 					sender.sendMessage(getConfig().getString("strings.nothing").replaceAll("&", "ง"));
+ 					sender.sendMessage(getConfig().getString("strings.nothing").replaceAll("&", "ยง"));
  				}
  			}
  		}
@@ -922,7 +922,7 @@ public class Main extends JavaPlugin implements Listener{
 	
 	static int maxcount = 5;
 	public static Map<String, Integer> sortByValue(Map<String, Integer> map, Player p) {
-		p.sendMessage("ง3 -- Leaderboards --");
+		p.sendMessage("ยง3 -- Leaderboards --");
 		
         List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer>>(map.entrySet());
 
@@ -936,7 +936,7 @@ public class Main extends JavaPlugin implements Listener{
         Map<String, Integer> result = new LinkedHashMap<String, Integer>();
         for (Map.Entry<String, Integer> entry : list) {
         	if(maxcount > 0){
-        		p.sendMessage("ง2" + entry.getKey() + " | " + entry.getValue() + "");
+        		p.sendMessage("ยง2" + entry.getKey() + " | " + entry.getValue() + "");
         	}
         	maxcount -= 1;
             result.put(entry.getKey(), entry.getValue());
@@ -973,8 +973,8 @@ public class Main extends JavaPlugin implements Listener{
 				}, 20);	
 			}else{
 				final Player p = event.getPlayer();
-				//p.sendMessage("ง4An error occurred while teleporting you back to the lobby.");
-				//getLogger().info("ง4Error: Could not find arena while trying to teleport player back to lobby!");
+				//p.sendMessage("ยง4An error occurred while teleporting you back to the lobby.");
+				//getLogger().info("ยง4Error: Could not find arena while trying to teleport player back to lobby!");
 			}
 			
 		}
@@ -989,7 +989,7 @@ public class Main extends JavaPlugin implements Listener{
 	        if (event.getClickedBlock().getType() == Material.SIGN_POST || event.getClickedBlock().getType() == Material.WALL_SIGN)
 	        {
 	            final Sign s = (Sign) event.getClickedBlock().getState();
-                if (s.getLine(0).equalsIgnoreCase("ง2[HorseRace]") && !s.getLine(1).equalsIgnoreCase(""))
+                if (s.getLine(0).equalsIgnoreCase("ยง2[HorseRace]") && !s.getLine(1).equalsIgnoreCase(""))
                 {
                 	if(s.getLine(1).equalsIgnoreCase("[cycle]") && getConfig().getBoolean("config.arena_cycling")){
                 		final String arena = arenas.get(0);
@@ -997,7 +997,7 @@ public class Main extends JavaPlugin implements Listener{
                     	cyclep.put(p, 0);
                     	boolean cont1 = true;
                     	
-                		if(s.getLine(2).equalsIgnoreCase("ง2Starting") || s.getLine(2).equalsIgnoreCase("ง2Join")){
+                		if(s.getLine(2).equalsIgnoreCase("ยง2Starting") || s.getLine(2).equalsIgnoreCase("ยง2Join")){
 	                		// update sign:
 		                    if(s.getLine(3) != ""){
 		                    	String d = s.getLine(3).split("/")[0];
@@ -1048,7 +1048,7 @@ public class Main extends JavaPlugin implements Listener{
     	                	
     	                	pinv.put(p, p.getInventory().getContents());
     	                	
-    	                	event.getPlayer().sendMessage("ง2You have entered a HorseRace!");
+    	                	event.getPlayer().sendMessage("ยง2You have entered a HorseRace!");
     	                	
     	                	String count = Integer.toString(arenaspawn.get(arena));
     	                	
@@ -1067,7 +1067,7 @@ public class Main extends JavaPlugin implements Listener{
                     	boolean cont1 = true;
                     	
                     	if(!arena.equalsIgnoreCase("") && validArena(arena)){           
-                    		if(s.getLine(2).equalsIgnoreCase("ง2Starting") || s.getLine(2).equalsIgnoreCase("ง2Join")){
+                    		if(s.getLine(2).equalsIgnoreCase("ยง2Starting") || s.getLine(2).equalsIgnoreCase("ยง2Join")){
     	                		// update sign:
     		                    if(s.getLine(3) != ""){
     		                    	String d = s.getLine(3).split("/")[0];
@@ -1110,7 +1110,7 @@ public class Main extends JavaPlugin implements Listener{
                     		
     	                	
                     	}else{
-                    		p.sendMessage("ง4There's no such arena or the arena itself is set up wrong (missing components or sign)!");
+                    		p.sendMessage("ยง4There's no such arena or the arena itself is set up wrong (missing components or sign)!");
                     		cont1 = false;
                     	}
                     	
@@ -1125,7 +1125,7 @@ public class Main extends JavaPlugin implements Listener{
                     		// teleport and spawn horse
     	                	arenap.put(event.getPlayer(), arena);
     	                	
-    	                	event.getPlayer().sendMessage("ง2You have entered a Horse Race!");
+    	                	event.getPlayer().sendMessage("ยง2You have entered a Horse Race!");
     	                	
     	                	String count = Integer.toString(arenaspawn.get(arena));
     	                	
@@ -1143,7 +1143,7 @@ public class Main extends JavaPlugin implements Listener{
                     	//getLogger().info("ARENAP COUNT: " + Integer.toString(arenap.values().size()));
                     	// no players in given arena anymore -> update sign
                     	if(!arenap.values().contains(arena) && validArena(arena)){
-    	                	s.setLine(2, "ง2Join");
+    	                	s.setLine(2, "ยง2Join");
     	                	s.setLine(3, "0/" + Integer.toString(as.getSpawnsFromArena(arena).size()));
     	                	s.update();
                     	}
@@ -1158,11 +1158,11 @@ public class Main extends JavaPlugin implements Listener{
 	public void onSignChange(SignChangeEvent event) {
 		Player p = event.getPlayer();
 		if (event.getLine(0).toLowerCase().contains("[horserace]") && p.hasPermission("horseracing.sign")) {
-			event.setLine(0, "ง2[HorseRace]");
+			event.setLine(0, "ยง2[HorseRace]");
 			if(event.getLine(1).equalsIgnoreCase("[cycle]") && getConfig().getBoolean("config.arena_cycling")){
 				event.setLine(1, "[Cycle]");
             	
-            	event.setLine(2, "ง2Join");
+            	event.setLine(2, "ยง2Join");
             	event.setLine(3, "0/" + Integer.toString(as.getSpawnsFromArena(arenas.get(0)).size()));
             	
             	getConfig().set("config.cycle.sign.world", p.getWorld().getName());
@@ -1173,9 +1173,9 @@ public class Main extends JavaPlugin implements Listener{
 			}else{
 				if (!event.getLine(1).equalsIgnoreCase("") && getConfig().contains(event.getLine(1))){
 					String arena = event.getLine(1);
-					event.setLine(1, "ง5" + arena);
+					event.setLine(1, "ยง5" + arena);
 	            	
-	            	event.setLine(2, "ง2Join");
+	            	event.setLine(2, "ยง2Join");
 	            	event.setLine(3, "0/" + Integer.toString(as.getSpawnsFromArena(arena).size()));
 	            	
 	            	getConfig().set(arena + ".sign.world", p.getWorld().getName());
@@ -1184,7 +1184,7 @@ public class Main extends JavaPlugin implements Listener{
 	            	getConfig().set(arena + ".sign.z", event.getBlock().getZ());
 	            	this.saveConfig();
 				}else{
-					event.getPlayer().sendMessage("ง4Unfortunately, this arena was not found!");
+					event.getPlayer().sendMessage("ยง4Unfortunately, this arena was not found!");
 					event.getBlock().breakNaturally();
 				}
 			}
@@ -1274,7 +1274,7 @@ public class Main extends JavaPlugin implements Listener{
     	                		arenaspawn.put(arena, arenaspawn.get(arena) + 1);
     	                		pspawn.put(p, arenaspawn.get(arena));
     	                	}
-							p.sendMessage("ง2You won this race!");
+							p.sendMessage("ยง2You won this race!");
 							if(getConfig().getBoolean("config.use_economy")){
 								//give money
 								as.ManageMoney(p, "win");
@@ -1289,7 +1289,7 @@ public class Main extends JavaPlugin implements Listener{
 								ap.getVehicle().remove();
 								// tp away
 		    			    	if(ap != p){
-		    			    		ap.sendMessage(getConfig().getString("strings.lost").replaceAll("&", "ง"));
+		    			    		ap.sendMessage(getConfig().getString("strings.lost").replaceAll("&", "ยง"));
 		    			    	}
 		    			    	pspawn.put(ap, countspawn);
 						    	final Player p_ = ap;
@@ -1321,7 +1321,7 @@ public class Main extends JavaPlugin implements Listener{
 						}else{
 							final String arena = arenas.get(currentcycle);
 							// tp to lobby of last arena
-							p.sendMessage(getConfig().getString("strings.won").replaceAll("&", "ง"));
+							p.sendMessage(getConfig().getString("strings.won").replaceAll("&", "ยง"));
 							if(getConfig().getInt("stats." + p.getName() + ".won") > 0){
 								getConfig().set("stats." + p.getName() + ".won", getConfig().getInt("stats." + p.getName() + ".won") + 1);
 								this.saveConfig();
@@ -1369,7 +1369,7 @@ public class Main extends JavaPlugin implements Listener{
 							ArrayList<Player> arenaplayers = new ArrayList<Player>(getKeysByValue(arenap, arena));
 							for(Player ap : arenaplayers){
 								ap.getVehicle().remove();
-		    			    	ap.sendMessage(getConfig().getString("strings.lost").replaceAll("&", "ง"));
+		    			    	ap.sendMessage(getConfig().getString("strings.lost").replaceAll("&", "ยง"));
 		    			    	
 		    			    	if(getConfig().getInt("stats." + ap.getName() + ".lost") > 0){
 									getConfig().set("stats." + ap.getName() + ".lost", getConfig().getInt("stats." + ap.getName() + ".lost") + 1);
@@ -1412,7 +1412,7 @@ public class Main extends JavaPlugin implements Listener{
 							int max_round = getConfig().getInt("config.rounds");
 							Player winner = p;
 							if(round < max_round){
-								winner.sendMessage("ง2You won the round!");
+								winner.sendMessage("ยง2You won the round!");
 								if(getConfig().getBoolean("config.use_economy")){
 									//give money
 									as.ManageMoney(p, "win");
@@ -1427,7 +1427,7 @@ public class Main extends JavaPlugin implements Listener{
 									ap.getVehicle().remove();
 									// tp away
 			    			    	if(ap != winner){
-			    			    		ap.sendMessage(getConfig().getString("strings.lost").replaceAll("&", "ง"));
+			    			    		ap.sendMessage(getConfig().getString("strings.lost").replaceAll("&", "ยง"));
 			    			    	}
 							    	final Player p_ = ap;
 							    	final Location t2 = as.getLocFromArena(arena, "spawn" + Integer.toString(countspawn));
@@ -1456,7 +1456,7 @@ public class Main extends JavaPlugin implements Listener{
 								getLogger().info("ROUND: " + Integer.toString(round));
 							}else{
 								rounds.put(arena, 0);
-								p.sendMessage(getConfig().getString("strings.won").replaceAll("&", "ง"));
+								p.sendMessage(getConfig().getString("strings.won").replaceAll("&", "ยง"));
 								if(getConfig().getInt("stats." + p.getName() + ".won") > 0){
 									getConfig().set("stats." + p.getName() + ".won", getConfig().getInt("stats." + p.getName() + ".won") + 1);
 									this.saveConfig();
@@ -1503,7 +1503,7 @@ public class Main extends JavaPlugin implements Listener{
 								ArrayList<Player> arenaplayers = new ArrayList<Player>(getKeysByValue(arenap, arena));
 								for(Player ap : arenaplayers){
 									ap.getVehicle().remove();
-			    			    	ap.sendMessage(getConfig().getString("strings.lost").replaceAll("&", "ง"));
+			    			    	ap.sendMessage(getConfig().getString("strings.lost").replaceAll("&", "ยง"));
 			    			    	
 			    			    	if(getConfig().getInt("stats." + ap.getName() + ".lost") > 0){
 										getConfig().set("stats." + ap.getName() + ".lost", getConfig().getInt("stats." + ap.getName() + ".lost") + 1);
@@ -1539,9 +1539,9 @@ public class Main extends JavaPlugin implements Listener{
 								arenaspawn.remove(arena);
 							} // end of if(round < max_round)
 						}else{ // ROUNDS OR NORMAL:
-							p.sendMessage(getConfig().getString("strings.won").replaceAll("&", "ง"));
+							p.sendMessage(getConfig().getString("strings.won").replaceAll("&", "ยง"));
 							if(getConfig().getBoolean("config.announce_winner")){
-								getServer().broadcastMessage("ง3" + p.getName() + " won a HorseRace!");
+								getServer().broadcastMessage("ยง3" + p.getName() + " won a HorseRace!");
 							}
 							if(getConfig().getInt("stats." + p.getName() + ".won") > 0){
 								getConfig().set("stats." + p.getName() + ".won", getConfig().getInt("stats." + p.getName() + ".won") + 1);
@@ -1597,7 +1597,7 @@ public class Main extends JavaPlugin implements Listener{
 								// tp away
 		    			    	arenap.remove(ap);
 		    			    	
-		    			    	ap.sendMessage(getConfig().getString("strings.lost").replaceAll("&", "ง"));
+		    			    	ap.sendMessage(getConfig().getString("strings.lost").replaceAll("&", "ยง"));
 		
 		    			    	if(getConfig().getInt("stats." + ap.getName() + ".lost") > 0){
 									getConfig().set("stats." + ap.getName() + ".lost", getConfig().getInt("stats." + ap.getName() + ".lost") + 1);
@@ -1674,7 +1674,7 @@ public class Main extends JavaPlugin implements Listener{
 				// nothing
 			}else{
 				event.setCancelled(true);
-				event.getPlayer().sendMessage(getConfig().getString("strings.ingame").replaceAll("&", "ง"));
+				event.getPlayer().sendMessage(getConfig().getString("strings.ingame").replaceAll("&", "ยง"));
 			}
 		}
 	}
@@ -1702,7 +1702,7 @@ public class Main extends JavaPlugin implements Listener{
 	            getConfig().set(arenaname + ".finishline.world", p.getWorld().getName());
 	            this.saveConfig();
 	            
-		        event.getPlayer().sendMessage("ง2Finishline point registered.");
+		        event.getPlayer().sendMessage("ยง2Finishline point registered.");
 		        event.setCancelled(true);
            }
     	}
@@ -1731,9 +1731,9 @@ public class Main extends JavaPlugin implements Listener{
 			            this.saveConfig();
 			            
 			            if(getConfig().contains(arenaname + ".finishline.x1")){
-			            	event.getPlayer().sendMessage("ง2Finishline successfully registered.");
+			            	event.getPlayer().sendMessage("ยง2Finishline successfully registered.");
 			            }else{
-			            	event.getPlayer().sendMessage("ง2First Finishline point registered. Now leftclick the other point.");
+			            	event.getPlayer().sendMessage("ยง2First Finishline point registered. Now leftclick the other point.");
 			            }
 		        }
             }
