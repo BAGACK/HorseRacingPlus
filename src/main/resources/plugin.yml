@@ -1,7 +1,7 @@
 name: HorseRacingPlus
 main: com.comze_instancelabs.horseracingplus.Main
 version: 1.4.1
-author: instancelabs
+author: [instancelabs,mepeisen]
 permissions:
   horseracing.createrace:
     description: Gives access to create a race.
