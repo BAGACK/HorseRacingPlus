@@ -137,7 +137,7 @@ public class ArenaSystem {
 			secs = main.secs_.get(arena);
 		}else{
 			if(s != null){
-				s.setLine(2, "�2Starting");
+				s.setLine(2, "§2Starting");
 	        	s.update();
 			}
 			
@@ -147,7 +147,7 @@ public class ArenaSystem {
 		if(main.secs_updater.containsValue(p_)){
 			main.secs_.put(arena, secs - 1);
 			for(Player p : main.arenap.keySet()){
-        		p.sendMessage("�2Starting in " + Integer.toString(secs));
+        		p.sendMessage("§2Starting in " + Integer.toString(secs));
         	}
 		}
 		
@@ -174,7 +174,7 @@ public class ArenaSystem {
         		main.getServer().getScheduler().cancelAllTasks();
         	}
         	if(s != null){
-	        	s.setLine(2, "�4Ingame");
+	        	s.setLine(2, "§4Ingame");
 	        	s.update();
         	}
         	for(Player p : main.arenap.keySet()){
@@ -226,7 +226,7 @@ public class ArenaSystem {
 			if(main.economy){
 	 			if(main.gambling){
 	     			if(main.econ.getBalance(p.getName()) < 10){
-	 					p.sendMessage(main.getConfig().getString("strings.notenoughmoney").replaceAll("&", "�"));
+	 					p.sendMessage(main.getConfig().getString("strings.notenoughmoney").replaceAll("&", "§"));
 	 					return false;
 	 				}else{
 	     				EconomyResponse r = main.econ.withdrawPlayer(p.getName(), main.getConfig().getDouble("config.entry_money"));
@@ -256,7 +256,7 @@ public class ArenaSystem {
 				
 				for(Player p_ : main.bet_player.keySet()){
 	 				if(p == main.bet_player.get(p_)){
-	 					p_.sendMessage("�2Nice bet!");
+	 					p_.sendMessage("§2Nice bet!");
 	 					EconomyResponse r = main.econ.depositPlayer(p_.getName(), main.bet_amount.get(p_) * 2);
 	        			if(!r.transactionSuccess()) {
 	                    	p.sendMessage(String.format("An error occured: %s", r.errorMessage));
@@ -374,7 +374,7 @@ public class ArenaSystem {
             			if(main.canceltask.get(p) != null){
             				main.getServer().getScheduler().cancelTask(main.canceltask.get(p));
             			}
-                		s_.setLine(2, "�2Join");
+                		s_.setLine(2, "§2Join");
                     	s_.update();
                     	if(s_ != null){
 							s_.setLine(3, Integer.toString(0) + "/" + Integer.toString(getSpawnsFromArena(arena).size()));
@@ -387,7 +387,7 @@ public class ArenaSystem {
             	if(main.getConfig().getBoolean("config.lastmanstanding")){
 	            	if(bef.equals(2)){ // 1 player left -> other one gets_prize
 	            		s_.setLine(3, Integer.toString(0) + "/" + Integer.toString(getSpawnsFromArena(arena).size()));
-	            		s_.setLine(2, "�2Join");
+	            		s_.setLine(2, "§2Join");
 	            		s_.update();
 	            		try{
 	            			main.getServer().getScheduler().cancelTask(main.canceltask.get(p));
@@ -401,7 +401,7 @@ public class ArenaSystem {
 	            		final Player last = main.getKeyByValue(main.arenap, arena);
 	            		
                 		if(last != null){
-                    		last.sendMessage("�3You are the last man standing and got a prize! Leave with /hr leave.");
+                    		last.sendMessage("§3You are the last man standing and got a prize! Leave with /hr leave.");
                     		
     	            		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
     							@Override
@@ -420,7 +420,7 @@ public class ArenaSystem {
     				    	
     			    		main.arenap.remove(last);
     			    		
-    				    	s_.setLine(2, "�2Join");
+    				    	s_.setLine(2, "§2Join");
     				    	s_.setLine(3, "0/" + Integer.toString(getSpawnsFromArena(arena).size()));
     				    	s_.update();
                     		
@@ -442,7 +442,7 @@ public class ArenaSystem {
             	
             	if(bef < 2){
             		s_.setLine(3, Integer.toString(0) + "/" + Integer.toString(getSpawnsFromArena(arena).size()));
-            		s_.setLine(2, "�2Join");
+            		s_.setLine(2, "§2Join");
             		s_.update();
             		try{
         				main.getServer().getScheduler().cancelTask(main.canceltask.get(p));
@@ -468,7 +468,7 @@ public class ArenaSystem {
         		s_.setLine(3, Integer.toString(bef - 1) + "/" + Integer.toString(getSpawnsFromArena(arena).size()));
         		s_.update();
         	}
-        	s_.setLine(2, "�2Join");
+        	s_.setLine(2, "§2Join");
         	s_.update();
         }
 	}
