@@ -1,6 +1,6 @@
 name: HorseRacingPlus
 main: com.comze_instancelabs.horseracingplus.Main
-version: ${version}
+version: ${minigames.releaseversion}-${minigames.timestamp}
 author: [instancelabs,mepeisen]
 permissions:
   horseracing.createrace:
