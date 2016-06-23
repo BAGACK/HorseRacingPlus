@@ -1,4 +1,4 @@
-name: HorseRacingPlus
+name: MGHorseRacingPlus
 main: com.comze_instancelabs.horseracingplus.Main
 version: ${minigames.releaseversion}-${minigames.timestamp}
 author: [instancelabs,mepeisen]
