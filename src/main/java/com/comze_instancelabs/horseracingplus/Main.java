@@ -58,6 +58,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import com.comze_instancelabs.horseracingplus.HorseModifierUNUSED.HorseType;
 import com.comze_instancelabs.horseracingplus.HorseModifierUNUSED.HorseVariant;
+import com.comze_instancelabs.minigamesapi.ArenaConfigStrings;
 
 /**
  * 
@@ -118,10 +119,10 @@ public class Main extends JavaPlugin implements Listener{
 		getConfig().addDefault("config.lastmanstanding", true);
 		getConfig().addDefault("config.remove_mobs_ingame", true);
 		
-		getConfig().addDefault("mysql.enabled", false);
-		getConfig().addDefault("mysql.host", "localhost");
-		getConfig().addDefault("mysql.database", "database");
-		getConfig().addDefault("mysql.user", "root");
+		getConfig().addDefault(ArenaConfigStrings.CONFIG_MYSQL_ENABLED, false);
+		getConfig().addDefault(ArenaConfigStrings.CONFIG_MYSQL_HOST, "localhost");
+		getConfig().addDefault(ArenaConfigStrings.CONFIG_MYSQL_DATABASE, "database");
+		getConfig().addDefault(ArenaConfigStrings.CONFIG_MYSQL_USER, "root");
 		getConfig().addDefault("mysql.password", "pass");
 		
 		
@@ -1329,7 +1330,7 @@ public class Main extends JavaPlugin implements Listener{
 								getConfig().set("stats." + p.getName() + ".won", 1);
 								this.saveConfig();
 							}
-							if(getConfig().getBoolean("mysql.enabled")){
+							if(getConfig().getBoolean(ArenaConfigStrings.CONFIG_MYSQL_ENABLED)){
 								this.MySQLUpdateStats(p.getName(), "win");
 							}
 							
@@ -1378,7 +1379,7 @@ public class Main extends JavaPlugin implements Listener{
 									getConfig().set("stats." + ap.getName() + ".lost", 1);
 									this.saveConfig();
 								}
-		    			    	if(getConfig().getBoolean("mysql.enabled")){
+		    			    	if(getConfig().getBoolean(ArenaConfigStrings.CONFIG_MYSQL_ENABLED)){
 									this.MySQLUpdateStats(ap.getName(), "lose");
 								}
 		    			    	arenap.remove(ap);
@@ -1464,7 +1465,7 @@ public class Main extends JavaPlugin implements Listener{
 									getConfig().set("stats." + p.getName() + ".won", 1);
 									this.saveConfig();
 								}
-								if(getConfig().getBoolean("mysql.enabled")){
+								if(getConfig().getBoolean(ArenaConfigStrings.CONFIG_MYSQL_ENABLED)){
 									this.MySQLUpdateStats(p.getName(), "win");
 								}
 								
@@ -1512,7 +1513,7 @@ public class Main extends JavaPlugin implements Listener{
 										getConfig().set("stats." + ap.getName() + ".lost", 1);
 										this.saveConfig();
 									}
-			    			    	if(getConfig().getBoolean("mysql.enabled")){
+			    			    	if(getConfig().getBoolean(ArenaConfigStrings.CONFIG_MYSQL_ENABLED)){
 										this.MySQLUpdateStats(ap.getName(), "lose");
 									}
 			    			    	arenap.remove(ap);
@@ -1550,7 +1551,7 @@ public class Main extends JavaPlugin implements Listener{
 								getConfig().set("stats." + p.getName() + ".won", 1);
 								this.saveConfig();
 							}
-							if(getConfig().getBoolean("mysql.enabled")){
+							if(getConfig().getBoolean(ArenaConfigStrings.CONFIG_MYSQL_ENABLED)){
 								this.MySQLUpdateStats(p.getName(), "win");
 							}
 							
@@ -1621,7 +1622,7 @@ public class Main extends JavaPlugin implements Listener{
 						    	as.handleSign(s_, aren);
 						    	ap.getInventory().setContents(pinv.get(ap));
 						    	
-						    	if(getConfig().getBoolean("mysql.enabled")){
+						    	if(getConfig().getBoolean(ArenaConfigStrings.CONFIG_MYSQL_ENABLED)){
 									this.MySQLUpdateStats(ap.getName(), "lose");
 								}
 							}
@@ -1780,7 +1781,7 @@ public class Main extends JavaPlugin implements Listener{
     	Connection c = null;
 		
     	try{
-    		MySQL = new MySQL(getConfig().getString("mysql.host"), "3306", getConfig().getString("mysql.database"), getConfig().getString("mysql.user"), getConfig().getString("mysql.password"));
+    		MySQL = new MySQL(getConfig().getString(ArenaConfigStrings.CONFIG_MYSQL_HOST), "3306", getConfig().getString(ArenaConfigStrings.CONFIG_MYSQL_DATABASE), getConfig().getString(ArenaConfigStrings.CONFIG_MYSQL_USER), getConfig().getString("mysql.password"));
     		c = MySQL.open();
     	}catch(Exception e){
     		getLogger().severe("Fatal MySQL Error. Are the provided credentials right?");
