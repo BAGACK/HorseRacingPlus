@@ -59,6 +59,7 @@ import org.bukkit.scheduler.BukkitTask;
 import com.comze_instancelabs.horseracingplus.HorseModifierUNUSED.HorseType;
 import com.comze_instancelabs.horseracingplus.HorseModifierUNUSED.HorseVariant;
 import com.comze_instancelabs.minigamesapi.ArenaConfigStrings;
+import com.comze_instancelabs.minigamesapi.PluginConfigStrings;
 
 /**
  * 
@@ -110,7 +111,7 @@ public class Main extends JavaPlugin implements Listener{
 		getConfig().addDefault("config.rounds", 2);
 		getConfig().addDefault("config.announce_winner", true);
 		getConfig().addDefault("config.arena_cycling", false);
-		getConfig().addDefault("config.auto_updating", true);
+		getConfig().addDefault(PluginConfigStrings.AUTO_UPDATING, true);
 		getConfig().addDefault("config.enable_betting", false);
 		getConfig().addDefault("config.max_bet_amount", 500);
 		getConfig().addDefault("shop.jumppotion_price", 50);
@@ -187,7 +188,7 @@ public class Main extends JavaPlugin implements Listener{
             }
         }
         
-        if(getConfig().getBoolean("config.auto_updating")){
+        if(getConfig().getBoolean(PluginConfigStrings.AUTO_UPDATING)){
         	//Updater updater = new Updater(this, "horse-racing-plus", this.getFile(), Updater.UpdateType.DEFAULT, false);
         	Updater updater = new Updater(this, 63625, this.getFile(), Updater.UpdateType.DEFAULT, false);
         }
