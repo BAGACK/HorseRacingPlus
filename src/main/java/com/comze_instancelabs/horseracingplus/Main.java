@@ -4,7 +4,6 @@ package com.comze_instancelabs.horseracingplus;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,26 +14,17 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
-
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.economy.EconomyResponse;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Boat;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -50,16 +40,16 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 
-import com.comze_instancelabs.horseracingplus.HorseModifierUNUSED.HorseType;
-import com.comze_instancelabs.horseracingplus.HorseModifierUNUSED.HorseVariant;
 import com.comze_instancelabs.minigamesapi.ArenaConfigStrings;
+import com.comze_instancelabs.minigamesapi.MinigamesAPI;
 import com.comze_instancelabs.minigamesapi.PluginConfigStrings;
+
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 
 /**
  * 
@@ -341,7 +331,7 @@ public class Main extends JavaPlugin implements Listener{
  				String action = args[0];
  				if(action.equalsIgnoreCase("createrace") && args.length > 1){
  					// Create arena
- 					if(p.hasPermission("horseracing.create")){
+ 					if(p.hasPermission(MinigamesAPI.getAPI().getPermissionGamePrefix("horseracing") + ".create")){
  						this.getConfig().set(args[1] + ".name", args[1]);
     	    			this.getConfig().set(args[1] + ".world", p.getWorld().getName());
     	    			this.saveConfig();
@@ -352,7 +342,7 @@ public class Main extends JavaPlugin implements Listener{
  					}
  				}else if(action.equalsIgnoreCase("setlobby") && args.length > 1){
  					// setlobby
- 					if(p.hasPermission("horseracing.setlobby")){
+ 					if(p.hasPermission(MinigamesAPI.getAPI().getPermissionGamePrefix("horseracing") + ".setlobby")){
  						String arena = args[1];
     		    		Location l = p.getLocation();
     		    		getConfig().set(args[1] + ".lobbyspawn.x", (int)l.getX());
@@ -367,7 +357,7 @@ public class Main extends JavaPlugin implements Listener{
  					}
  				}else if(action.equalsIgnoreCase("setspawn") && args.length > 2){
  					// setspawn
- 					if(p.hasPermission("horseracing.setspawn")){
+ 					if(p.hasPermission(MinigamesAPI.getAPI().getPermissionGamePrefix("horseracing") + ".setspawn")){
  						String arena = args[2];
  						String count = args[1];
  			    		Location l = p.getLocation();
@@ -383,7 +373,7 @@ public class Main extends JavaPlugin implements Listener{
  					}
  				}else if(action.equalsIgnoreCase("setspectate") && args.length > 1){
  					// setspectatespawn
- 					if(p.hasPermission("horseracing.setspawn")){
+ 					if(p.hasPermission(MinigamesAPI.getAPI().getPermissionGamePrefix("horseracing") + ".setspawn")){
  						String arena = args[1];
  			    		Location l = p.getLocation();
  			    		getConfig().set(args[1] + ".spectate.x", (int)l.getX());
@@ -420,14 +410,14 @@ public class Main extends JavaPlugin implements Listener{
  					}
  				}else if(action.equalsIgnoreCase("removerace") && args.length > 1){
  					// removearena
- 					if(p.hasPermission("horseracing.remove")){
+ 					if(p.hasPermission(MinigamesAPI.getAPI().getPermissionGamePrefix("horseracing") + ".remove")){
  						this.getConfig().set(args[1], null);
     	    			this.saveConfig();
     	    			sender.sendMessage(getConfig().getString("strings.raceremoved").replaceAll("&", "§"));
  					}
  				}else if(action.equalsIgnoreCase("removespawn") && args.length > 2){
  					// removearena
- 					if(p.hasPermission("horseracing.remove")){
+ 					if(p.hasPermission(MinigamesAPI.getAPI().getPermissionGamePrefix("horseracing") + ".remove")){
  						String arena = args[1];
  						String count = args[2];
  						this.getConfig().set(arena + ".spawn" + args[2], null);
@@ -435,7 +425,7 @@ public class Main extends JavaPlugin implements Listener{
     	    			sender.sendMessage("§4Spawnpoint removed.");
  					}
  				}else if(action.equalsIgnoreCase("setfinish") && args.length > 1){
- 					if(p.hasPermission("horseracing.setfinish")){
+ 					if(p.hasPermission(MinigamesAPI.getAPI().getPermissionGamePrefix("horseracing") + ".setfinish")){
 	 					creation.put(p, args[1]);	
 	 					p.getInventory().addItem(new ItemStack(Material.WOOD_SPADE, 1));
 	 					p.updateInventory();
@@ -721,7 +711,7 @@ public class Main extends JavaPlugin implements Listener{
 					}
  				}else if(action.equalsIgnoreCase("list")){
  					// list
- 					if(p.hasPermission("horseracing.list")){
+ 					if(p.hasPermission(MinigamesAPI.getAPI().getPermissionGamePrefix("horseracing") + ".list")){
  						p.sendMessage("§3 -- Arenas --");
  						ArrayList<String> keys = new ArrayList<String>();
     			        keys.addAll(getConfig().getKeys(false));
@@ -742,7 +732,7 @@ public class Main extends JavaPlugin implements Listener{
     			        }
  					}
  				}else if(action.equalsIgnoreCase("reload")){
- 					if(sender.hasPermission("horseracing.reload")){
+ 					if(sender.hasPermission(MinigamesAPI.getAPI().getPermissionGamePrefix("horseracing") + ".reload")){
     					this.reloadConfig();
     					if(getConfig().getBoolean("config.use_gambling")){
     						gambling = true;
@@ -755,7 +745,7 @@ public class Main extends JavaPlugin implements Listener{
  					}
  				}else if(action.equalsIgnoreCase("reset") && args.length > 0){
  					if(args.length > 1){
-    					if (sender.hasPermission("boatgame.cleararena"))
+    					if (sender.hasPermission(MinigamesAPI.getAPI().getPermissionGamePrefix("horseracing") + ".cleararena"))
     	                {
 	    	    			String arena = args[1];
 	    	    			
@@ -1159,7 +1149,7 @@ public class Main extends JavaPlugin implements Listener{
 	@EventHandler
 	public void onSignChange(SignChangeEvent event) {
 		Player p = event.getPlayer();
-		if (event.getLine(0).toLowerCase().contains("[horserace]") && p.hasPermission("horseracing.sign")) {
+		if (event.getLine(0).toLowerCase().contains("[horserace]") && p.hasPermission(MinigamesAPI.getAPI().getPermissionGamePrefix("horseracing") + ".sign")) {
 			event.setLine(0, "§2[HorseRace]");
 			if(event.getLine(1).equalsIgnoreCase("[cycle]") && getConfig().getBoolean("config.arena_cycling")){
 				event.setLine(1, "[Cycle]");
