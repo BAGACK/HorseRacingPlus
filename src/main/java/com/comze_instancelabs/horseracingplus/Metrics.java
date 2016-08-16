@@ -34,6 +34,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.scheduler.BukkitTask;
 
+import com.comze_instancelabs.minigamesapi.MinigamesAPI;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -442,7 +444,7 @@ public class Metrics {
         connection.setDoOutput(true);
 
         if (debug) {
-            System.out.println("[Metrics] Prepared request for " + pluginName + " uncompressed=" + uncompressed.length + " compressed=" + compressed.length);
+            this.plugin.getLogger().fine("[Metrics] Prepared request for " + pluginName + " uncompressed=" + uncompressed.length + " compressed=" + compressed.length);
         }
 
         // Write the data
@@ -498,7 +500,7 @@ public class Metrics {
             gzos = new GZIPOutputStream(baos);
             gzos.write(input.getBytes("UTF-8"));
         } catch (IOException e) {
-            e.printStackTrace();
+        	MinigamesAPI.getAPI().getLogger().log(Level.WARNING, "exception", e);
         } finally {
             if (gzos != null) try {
                 gzos.close();

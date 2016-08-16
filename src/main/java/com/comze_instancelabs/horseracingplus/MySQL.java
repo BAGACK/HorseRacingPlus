@@ -3,7 +3,10 @@ package com.comze_instancelabs.horseracingplus;
 
 import java.sql.Connection; 
 import java.sql.DriverManager; 
-import java.sql.SQLException; 
+import java.sql.SQLException;
+import java.util.logging.Level;
+
+import com.comze_instancelabs.minigamesapi.MinigamesAPI; 
   
   
 public class MySQL extends Database 
@@ -29,9 +32,9 @@ public class MySQL extends Database
             this.c = DriverManager.getConnection("jdbc:mysql://" + this.hostname + ":" + this.port + "/" + this.database, this.user, this.password); 
             return c; 
         } catch (SQLException e) { 
-            System.out.println("Could not connect to MySQL server! because: " + e.getMessage()); 
+        	MinigamesAPI.getAPI().getLogger().log(Level.SEVERE, "Could not connect to MySQL server! because: ", e); 
         } catch (ClassNotFoundException e) { 
-            System.out.println("JDBC Driver not found!"); 
+        	MinigamesAPI.getAPI().getLogger().log(Level.SEVERE, "JDBC Driver not found!"); 
         } 
         return this.c; 
     } 

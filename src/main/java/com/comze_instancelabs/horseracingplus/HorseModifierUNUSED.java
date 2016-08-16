@@ -5,13 +5,16 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
- 
+import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import com.comze_instancelabs.minigamesapi.MinigamesAPI;
  
 /**
 * HorseModifier v1.1
@@ -35,7 +38,7 @@ public class HorseModifierUNUSED {
             this.entityHorse = ReflectionUtil.getMethod("getHandle", horse.getClass(), 0).invoke(horse);
             this.nbtTagCompound = NBTUtil.getNBTTagCompound(entityHorse);
         } catch (Exception e) {
-            e.printStackTrace();
+        	MinigamesAPI.getAPI().getLogger().log(Level.WARNING, "exception", e);
         }
     }
  
@@ -47,7 +50,7 @@ public class HorseModifierUNUSED {
         try {
             this.nbtTagCompound = NBTUtil.getNBTTagCompound(entityHorse);
         } catch (Exception e) {
-            e.printStackTrace();
+            MinigamesAPI.getAPI().getLogger().log(Level.WARNING, "exception", e);
         }
     }
  
@@ -63,7 +66,7 @@ public class HorseModifierUNUSED {
             ReflectionUtil.getMethod("addEntity", worldServer.getClass(), 1).invoke(worldServer, entityHorse);
             return new HorseModifierUNUSED(entityHorse);
         } catch (Exception e) {
-            e.printStackTrace();
+            MinigamesAPI.getAPI().getLogger().log(Level.WARNING, "exception", e);
             return null;
         }
     }
@@ -77,7 +80,7 @@ public class HorseModifierUNUSED {
             Object nbtTagCompound = NBTUtil.getNBTTagCompound(entityLiving);
             return NBTUtil.hasKeys(nbtTagCompound, new String[] { "EatingHaystack", "ChestedHorse", "HasReproduced", "Bred", "Type", "Variant", "Temper", "Tame" });
         } catch (Exception e) {
-            e.printStackTrace();
+            MinigamesAPI.getAPI().getLogger().log(Level.WARNING, "exception", e);
             return false;
         }
     }
@@ -149,7 +152,7 @@ public class HorseModifierUNUSED {
                 ReflectionUtil.getMethod("save", itemStack.getClass(), 1).invoke(itemStack, itemTag);
                 setHorseValue("ArmorItem", itemTag);
             } catch (Exception e) {
-                e.printStackTrace();
+                MinigamesAPI.getAPI().getLogger().log(Level.WARNING, "exception", e);
             }
         } else {
             setHorseValue("ArmorItem", null);
@@ -221,7 +224,7 @@ public class HorseModifierUNUSED {
             Object itemStack = ReflectionUtil.getMethod("createStack", Class.forName(ReflectionUtil.getPackageName() + ".ItemStack"), 1).invoke(this, itemTag);
             return (ItemStack) ReflectionUtil.getMethod("asCraftMirror", Class.forName(Bukkit.getServer().getClass().getPackage().getName() + ".inventory.CraftItemStack"), 1).invoke(this, itemStack);
         } catch (Exception e) {
-            e.printStackTrace();
+            MinigamesAPI.getAPI().getLogger().log(Level.WARNING, "exception", e);
             return null;
         }
     }
@@ -234,7 +237,7 @@ public class HorseModifierUNUSED {
             Object entityPlayer = ReflectionUtil.getMethod("getHandle", p.getClass(), 0).invoke(p);
             ReflectionUtil.getMethod("f", entityHorse.getClass(), 1).invoke(entityHorse, entityPlayer);
         } catch (Exception e) {
-            e.printStackTrace();
+            MinigamesAPI.getAPI().getLogger().log(Level.WARNING, "exception", e);
         }
     }
  
@@ -245,7 +248,7 @@ public class HorseModifierUNUSED {
         try {
             return (LivingEntity) ReflectionUtil.getMethod("getBukkitEntity", entityHorse.getClass(), 0).invoke(entityHorse);
         } catch (Exception e) {
-            e.printStackTrace();
+            MinigamesAPI.getAPI().getLogger().log(Level.WARNING, "exception", e);
             return null;
         }
     }
@@ -368,7 +371,7 @@ public class HorseModifierUNUSED {
                 }
                 return nbtTagCompound;
             } catch (Exception e) {
-                e.printStackTrace();
+                MinigamesAPI.getAPI().getLogger().log(Level.WARNING, "exception", e);
                 return null;
             }
         }
@@ -382,7 +385,7 @@ public class HorseModifierUNUSED {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                MinigamesAPI.getAPI().getLogger().log(Level.WARNING, "exception", e);
             }
         }
  
@@ -398,7 +401,7 @@ public class HorseModifierUNUSED {
                     ReflectionUtil.getMethod("set", nbtTagCompound.getClass(), 2).invoke(nbtTagCompound, key, value);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                MinigamesAPI.getAPI().getLogger().log(Level.WARNING, "exception", e);
             }
         }
  
@@ -412,7 +415,7 @@ public class HorseModifierUNUSED {
                     return ReflectionUtil.getMethod("getCompound", nbtTagCompound.getClass(), 1).invoke(nbtTagCompound, key);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                MinigamesAPI.getAPI().getLogger().log(Level.WARNING, "exception", e);
                 return null;
             }
         }
@@ -421,7 +424,7 @@ public class HorseModifierUNUSED {
             try {
                 return (Boolean) ReflectionUtil.getMethod("hasKey", nbtTagCompound.getClass(), 1).invoke(nbtTagCompound, key);
             } catch (Exception e) {
-                e.printStackTrace();
+                MinigamesAPI.getAPI().getLogger().log(Level.WARNING, "exception", e);
                 return false;
             }
         }
