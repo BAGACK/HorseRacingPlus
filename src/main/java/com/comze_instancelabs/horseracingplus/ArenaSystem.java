@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -29,6 +30,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitTask;
+
+import com.comze_instancelabs.minigamesapi.MinigamesAPI;
 
 
 public class ArenaSystem {
@@ -114,7 +117,7 @@ public class ArenaSystem {
         	try {
 				yml.createNewFile();
 			} catch (IOException e) {
-				e.printStackTrace();
+				MinigamesAPI.getAPI().getLogger().log(Level.WARNING, "exception", e);
 			}
         }
         
@@ -123,7 +126,7 @@ public class ArenaSystem {
 			pw.write(msg + newline);
 			pw.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			MinigamesAPI.getAPI().getLogger().log(Level.WARNING, "exception", e);
 		}
 	}
 	
