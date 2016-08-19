@@ -282,7 +282,7 @@ public class ArenaSystem {
 	 * @param p Player
 	 */
 	public void spawnHorse(Location t, Player p){
-		Horse hr = (Horse) t.getWorld().spawn(t, Horse.class);
+		Horse hr = (Horse) t.getWorld().spawn(t, Horse.class); // TODO if we migrate to minigames arena system we need to allow horse spawns, see snake 
 		hr.setVariant(Variant.HORSE);
 		hr.setCustomName(main.getConfig().getString("config.horsename"));
 		hr.setCustomNameVisible(true);
