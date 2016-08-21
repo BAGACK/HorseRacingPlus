@@ -2,9 +2,6 @@ package com.comze_instancelabs.horseracingplus;
 
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -47,6 +44,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.comze_instancelabs.minigamesapi.ArenaConfigStrings;
 import com.comze_instancelabs.minigamesapi.MinigamesAPI;
 import com.comze_instancelabs.minigamesapi.PluginConfigStrings;
+import com.comze_instancelabs.minigamesapi.sql.MainSQL;
+import com.comze_instancelabs.minigamesapi.util.Cuboid;
+import com.comze_instancelabs.minigamesapi.util.Metrics;
+import com.comze_instancelabs.minigamesapi.util.UpdaterBukkit;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -82,6 +83,8 @@ public class Main extends JavaPlugin implements Listener{
 	HashMap<Player, Integer> bet_amount = new HashMap<Player, Integer>(); // player -> bet amount
 	static HashMap<Player, ItemStack[]> pinv = new HashMap<Player, ItemStack[]>(); // player -> Inventory
 	static HashMap<Player, String> specp = new HashMap<Player, String>(); // playername -> arenaname [SPECTATING]
+	
+	private MainSQL msql;
 
 	
 	@Override
@@ -114,7 +117,15 @@ public class Main extends JavaPlugin implements Listener{
 		getConfig().addDefault(ArenaConfigStrings.CONFIG_MYSQL_HOST, "localhost");
 		getConfig().addDefault(ArenaConfigStrings.CONFIG_MYSQL_DATABASE, "database");
 		getConfig().addDefault(ArenaConfigStrings.CONFIG_MYSQL_USER, "root");
-		getConfig().addDefault("mysql.password", "pass");
+		if (getConfig().isSet("mysql.password"))
+		{
+			getConfig().addDefault(ArenaConfigStrings.CONFIG_MYSQL_PW, getConfig().get("mysql.password"));
+			getConfig().set("mysql.password", null);
+		}
+		else
+		{
+			getConfig().addDefault(ArenaConfigStrings.CONFIG_MYSQL_PW, "root");
+		}
 		
 		
 		getConfig().addDefault("strings.nopermission", "&4You don't have permission!");
@@ -180,7 +191,7 @@ public class Main extends JavaPlugin implements Listener{
         
         if(getConfig().getBoolean(PluginConfigStrings.AUTO_UPDATING)){
         	//Updater updater = new Updater(this, "horse-racing-plus", this.getFile(), Updater.UpdateType.DEFAULT, false);
-        	Updater updater = new Updater(this, 63625, this.getFile(), Updater.UpdateType.DEFAULT, false);
+        	UpdaterBukkit updater = new UpdaterBukkit(this, 63625, this.getFile(), UpdaterBukkit.UpdateType.DEFAULT, false);
         }
         
         for(Player p : Bukkit.getOnlinePlayers()){
@@ -230,10 +241,7 @@ public class Main extends JavaPlugin implements Listener{
 	        }	
         }
         
-	}
-	
-	public Plugin getWorldGuard(){
-		return Bukkit.getPluginManager().getPlugin("WorldGuard");
+        this.msql = new MainSQL(this, true);
 	}
 
 
@@ -1753,48 +1761,20 @@ public class Main extends JavaPlugin implements Listener{
     	return false;
     }
     
-    
-    
-    //TODO MYSQL
-    /*
-     * TABLE FORMAT:
-     * tablename: horseracing_stats
-     * 
-     * | id | player | win | lose |
-     */
     /**
      * Updates HorseRacing Statistics for the provided player
      * @param player the player to be updated
      * @param par2 can be win or lose, defines the type of update
      */
     public void MySQLUpdateStats(String player, String par2){
-		MySQL MySQL = null;
-    	Connection c = null;
-		
-    	try{
-    		MySQL = new MySQL(getConfig().getString(ArenaConfigStrings.CONFIG_MYSQL_HOST), "3306", getConfig().getString(ArenaConfigStrings.CONFIG_MYSQL_DATABASE), getConfig().getString(ArenaConfigStrings.CONFIG_MYSQL_USER), getConfig().getString("mysql.password"));
-    		c = MySQL.open();
-    	}catch(Exception e){
-    		getLogger().severe("Fatal MySQL Error. Are the provided credentials right?");
+    	if (par2.equals("win"))
+    	{
+        	this.msql.updateWinnerStats(MinigamesAPI.uuidToPlayer(MinigamesAPI.playerToUUID(player)), 0, true);
     	}
-    	
-    	if(c != null){
-	    	try {
-				ResultSet res_ = c.createStatement().executeQuery("SELECT * FROM horseracing_stats WHERE player='" + player + "'");
-				if(!res_.isBeforeFirst()){
-					c.createStatement().executeUpdate("INSERT INTO horseracing_stats VALUES('0', '" + player + "', '0', '0')");
-				}else{					
-					res_.first();
-					int newscore = res_.getInt(par2) + 1;
-					c.createStatement().executeUpdate("UPDATE horseracing_stats SET win='" + Integer.toString(newscore) + "' WHERE player='" + player + "'");
-				}
-			} catch (SQLException e) {
-				getLogger().severe("Fatal MySQL Error: Did you setup the tables and columns right?");
-			}	
-    	}else{
-    		getLogger().severe("Fatal MySQL Error. Connection appears to be null, are the credentials right?");
+    	else
+    	{
+    		this.msql.updateLoserStats(MinigamesAPI.uuidToPlayer(MinigamesAPI.playerToUUID(player)));
     	}
-		
 	}
 	
 
