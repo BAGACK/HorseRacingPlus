@@ -31,6 +31,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitTask;
 
+import com.comze_instancelabs.minigamesapi.MinecraftVersionsType;
 import com.comze_instancelabs.minigamesapi.MinigamesAPI;
 
 
@@ -282,8 +283,12 @@ public class ArenaSystem {
 	 * @param p Player
 	 */
 	public void spawnHorse(Location t, Player p){
-		Horse hr = (Horse) t.getWorld().spawn(t, Horse.class); // TODO if we migrate to minigames arena system we need to allow horse spawns, see snake 
-		hr.setVariant(Variant.HORSE);
+		Horse hr = (Horse) t.getWorld().spawn(t, Horse.class); // TODO if we migrate to minigames arena system we need to allow horse spawns, see snake
+		if (MinigamesAPI.SERVER_VERSION.isBelow(MinecraftVersionsType.V1_11))
+		{
+			// only allowed below 1.11
+			hr.setVariant(Variant.HORSE);
+		}
 		hr.setCustomName(main.getConfig().getString("config.horsename"));
 		hr.setCustomNameVisible(true);
 		//HorseModifier hm = HorseModifier.spawn(t);
