@@ -42,6 +42,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.comze_instancelabs.minigamesapi.ArenaConfigStrings;
+import com.comze_instancelabs.minigamesapi.Effects;
 import com.comze_instancelabs.minigamesapi.MinigamesAPI;
 import com.comze_instancelabs.minigamesapi.PluginConfigStrings;
 import com.comze_instancelabs.minigamesapi.sql.MainSQL;
@@ -103,6 +104,7 @@ public class Main extends JavaPlugin implements Listener{
 		getConfig().addDefault("config.use_rounds_system", false);
 		getConfig().addDefault("config.rounds", 2);
 		getConfig().addDefault("config.announce_winner", true);
+		getConfig().addDefault("config.announce_title", false);
 		getConfig().addDefault("config.arena_cycling", false);
 		getConfig().addDefault(PluginConfigStrings.AUTO_UPDATING, true);
 		getConfig().addDefault("config.enable_betting", false);
@@ -144,9 +146,15 @@ public class Main extends JavaPlugin implements Listener{
 		getConfig().addDefault("strings.ingame", "&eYou are not able to use any commands while in a race. You can use /hr leave or /horseracing leave if you want to leave this race.");
 		getConfig().addDefault("strings.left", "&eYou left the race!");
 		getConfig().addDefault("strings.won", "&2You won the race!");
+		getConfig().addDefault("strings.won_round", "&2You won the round!");
+		getConfig().addDefault("strings.won_cycle", "&2You won this race!");
 		getConfig().addDefault("strings.lost", "&4You lost!");
 		getConfig().addDefault("strings.creation", "&2Leftclick the first point and rightclick the second point of the finish line.");
 		getConfig().addDefault("strings.notenoughmoney", "&cYou don't have enough money to join this race!");
+		getConfig().addDefault("strings.ann_broadcast", "&3%player% won a HorseRace!");
+		getConfig().addDefault("strings.ann_title", "&2%player% won the race!");
+		getConfig().addDefault("strings.ann_subtitle", "&2and receives %money%$!");
+		getConfig().addDefault("strings.bet_won", "&2Nice bet! You received %money%$!");
 	
 		getConfig().options().copyDefaults(true);
 		this.saveConfig();
@@ -656,7 +664,7 @@ public class Main extends JavaPlugin implements Listener{
 		 							p.getInventory().clear();
 		                    		p.updateInventory();
 		 	                		// take money
-		 	                		if(!as.ManageMoney(p, "entry")){
+		 	                		if(!as.ManageMoneyEntry(p)){
 		 	                			cont1 = false;
 		 	                		}
 		 	                		
@@ -1041,7 +1049,7 @@ public class Main extends JavaPlugin implements Listener{
                     	
                     	if(cont1){                    		
                     		// take money
-                    		as.ManageMoney(p, "entry");
+                    		as.ManageMoneyEntry(p);
                     		
                     		// teleport and spawn horse
     	                	arenap.put(event.getPlayer(), arena);
@@ -1120,7 +1128,7 @@ public class Main extends JavaPlugin implements Listener{
                     		p.getInventory().clear();
                     		p.updateInventory();
                     		// take money
-                    		as.ManageMoney(p, "entry");
+                    		as.ManageMoneyEntry(p);
                     		
                     		// teleport and spawn horse
     	                	arenap.put(event.getPlayer(), arena);
@@ -1223,20 +1231,10 @@ public class Main extends JavaPlugin implements Listener{
 				String spawnstr = "spawn" + Integer.toString(pspawn.get(p));
 				Location currentspawn = as.getLocFromArena(aren, spawnstr);
 	    		
-	    		Location t1 = p.getLocation();
-	    		final Location t2 = currentspawn;
-	    		final Player p_ = p;
+	    		Location playerloc = p.getLocation();
 	    		
-	    		if(t1.getX() - t2.getX() > 2 || t1.getX() - t2.getX() < -2  || t1.getZ() - t2.getZ() > 2 || t1.getZ() - t2.getZ() < -2){
-		    		if(p.isInsideVehicle()){
-			    		p.getVehicle().remove();
-		    			p.teleport(t2);
-		    			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-		    				public void run(){        	                	
-        	                	as.spawnHorse(t2, p_);
-		    				}
-		    			}, 10);
-		    		}
+	    		if(isAwayFromSpawn(currentspawn, playerloc)){
+		    		respawnIfVehicle(p, currentspawn);
 	    		}
 			}else if(gamestarted.get(aren)){
 				if(!p.isInsideVehicle()){
@@ -1274,22 +1272,15 @@ public class Main extends JavaPlugin implements Listener{
     	                		arenaspawn.put(arena, arenaspawn.get(arena) + 1);
     	                		pspawn.put(p, arenaspawn.get(arena));
     	                	}
-							p.sendMessage("§2You won this race!");
-							if(getConfig().getBoolean("config.use_economy")){
-								//give money
-								as.ManageMoney(p, "win");
-							}else{
-								//give item
-								p.getInventory().addItem(new ItemStack(Material.getMaterial(getConfig().getInt("config.itemid")), getConfig().getInt("config.itemamount")));
-								p.updateInventory();
-							}
-							int countspawn = 1;
+							sendWinCycle(p);
 							ArrayList<Player> arenaplayers = new ArrayList<Player>(getKeysByValue(arenap, befarena));
+							giveWinReward(p, arenaplayers);
+							int countspawn = 1;
 							for(Player ap : arenaplayers){
 								ap.getVehicle().remove();
 								// tp away
 		    			    	if(ap != p){
-		    			    		ap.sendMessage(getConfig().getString("strings.lost").replaceAll("&", "§"));
+		    			    		sendLost(ap);
 		    			    	}
 		    			    	pspawn.put(ap, countspawn);
 						    	final Player p_ = ap;
@@ -1321,17 +1312,8 @@ public class Main extends JavaPlugin implements Listener{
 						}else{
 							final String arena = arenas.get(currentcycle);
 							// tp to lobby of last arena
-							p.sendMessage(getConfig().getString("strings.won").replaceAll("&", "§"));
-							if(getConfig().getInt("stats." + p.getName() + ".won") > 0){
-								getConfig().set("stats." + p.getName() + ".won", getConfig().getInt("stats." + p.getName() + ".won") + 1);
-								this.saveConfig();
-							}else{
-								getConfig().set("stats." + p.getName() + ".won", 1);
-								this.saveConfig();
-							}
-							if(getConfig().getBoolean(ArenaConfigStrings.CONFIG_MYSQL_ENABLED)){
-								this.MySQLUpdateStats(p.getName(), "win");
-							}
+							sendWin(p);
+							updateWinStats(p);
 							
 							gamestarted.put(arena, false);
 							cyclep.put(p, 0);
@@ -1357,30 +1339,14 @@ public class Main extends JavaPlugin implements Listener{
 		                    
 		                    p.getInventory().setContents(pinv.get(p));
 		                    
-		                    if(getConfig().getBoolean("config.use_economy")){
-								//give money
-								as.ManageMoney(p, "win");
-							}else{
-								//give item
-								p.getInventory().addItem(new ItemStack(Material.getMaterial(getConfig().getInt("config.itemid")), getConfig().getInt("config.itemamount")));
-								p.updateInventory();
-							}
-							
 							ArrayList<Player> arenaplayers = new ArrayList<Player>(getKeysByValue(arenap, arena));
+		                    giveWinReward(p, arenaplayers);
+							
 							for(Player ap : arenaplayers){
 								ap.getVehicle().remove();
-		    			    	ap.sendMessage(getConfig().getString("strings.lost").replaceAll("&", "§"));
+		    			    	sendLost(ap);
 		    			    	
-		    			    	if(getConfig().getInt("stats." + ap.getName() + ".lost") > 0){
-									getConfig().set("stats." + ap.getName() + ".lost", getConfig().getInt("stats." + ap.getName() + ".lost") + 1);
-									this.saveConfig();
-		    			    	}else{
-									getConfig().set("stats." + ap.getName() + ".lost", 1);
-									this.saveConfig();
-								}
-		    			    	if(getConfig().getBoolean(ArenaConfigStrings.CONFIG_MYSQL_ENABLED)){
-									this.MySQLUpdateStats(ap.getName(), "lose");
-								}
+		    			    	updateLoseStats(ap);
 		    			    	arenap.remove(ap);
 		    			    	
 						    	ap.teleport(t2);
@@ -1412,22 +1378,15 @@ public class Main extends JavaPlugin implements Listener{
 							int max_round = getConfig().getInt("config.rounds");
 							Player winner = p;
 							if(round < max_round){
-								winner.sendMessage("§2You won the round!");
-								if(getConfig().getBoolean("config.use_economy")){
-									//give money
-									as.ManageMoney(p, "win");
-								}else{
-									//give item
-									p.getInventory().addItem(new ItemStack(Material.getMaterial(getConfig().getInt("config.itemid")), getConfig().getInt("config.itemamount")));
-									p.updateInventory();
-								}
-								int countspawn = 1;
+								sendWinRound(p);
 								ArrayList<Player> arenaplayers = new ArrayList<Player>(getKeysByValue(arenap, arena));
+								giveWinReward(p, arenaplayers);
+								int countspawn = 1;
 								for(Player ap : arenaplayers){
 									ap.getVehicle().remove();
 									// tp away
 			    			    	if(ap != winner){
-			    			    		ap.sendMessage(getConfig().getString("strings.lost").replaceAll("&", "§"));
+			    			    		sendLost(ap);
 			    			    	}
 							    	final Player p_ = ap;
 							    	final Location t2 = as.getLocFromArena(arena, "spawn" + Integer.toString(countspawn));
@@ -1456,17 +1415,8 @@ public class Main extends JavaPlugin implements Listener{
 								getLogger().info("ROUND: " + Integer.toString(round));
 							}else{
 								rounds.put(arena, 0);
-								p.sendMessage(getConfig().getString("strings.won").replaceAll("&", "§"));
-								if(getConfig().getInt("stats." + p.getName() + ".won") > 0){
-									getConfig().set("stats." + p.getName() + ".won", getConfig().getInt("stats." + p.getName() + ".won") + 1);
-									this.saveConfig();
-								}else{
-									getConfig().set("stats." + p.getName() + ".won", 1);
-									this.saveConfig();
-								}
-								if(getConfig().getBoolean(ArenaConfigStrings.CONFIG_MYSQL_ENABLED)){
-									this.MySQLUpdateStats(p.getName(), "win");
-								}
+								sendWin(p);
+								updateWinStats(p);
 								
 								gamestarted.put(aren, false);
 								
@@ -1491,30 +1441,14 @@ public class Main extends JavaPlugin implements Listener{
 								
 			                    p.getInventory().setContents(pinv.get(p));
 			                    
-			                    if(getConfig().getBoolean("config.use_economy")){
-									//give money
-									as.ManageMoney(p, "win");
-								}else{
-									//give item
-									p.getInventory().addItem(new ItemStack(Material.getMaterial(getConfig().getInt("config.itemid")), getConfig().getInt("config.itemamount")));
-									p.updateInventory();
-								}
-			                    
 								ArrayList<Player> arenaplayers = new ArrayList<Player>(getKeysByValue(arenap, arena));
+			                    giveWinReward(p, arenaplayers);
+			                    
 								for(Player ap : arenaplayers){
 									ap.getVehicle().remove();
-			    			    	ap.sendMessage(getConfig().getString("strings.lost").replaceAll("&", "§"));
+			    			    	sendLost(ap);
 			    			    	
-			    			    	if(getConfig().getInt("stats." + ap.getName() + ".lost") > 0){
-										getConfig().set("stats." + ap.getName() + ".lost", getConfig().getInt("stats." + ap.getName() + ".lost") + 1);
-										this.saveConfig();
-			    			    	}else{
-										getConfig().set("stats." + ap.getName() + ".lost", 1);
-										this.saveConfig();
-									}
-			    			    	if(getConfig().getBoolean(ArenaConfigStrings.CONFIG_MYSQL_ENABLED)){
-										this.MySQLUpdateStats(ap.getName(), "lose");
-									}
+			    			    	updateLoseStats(ap);
 			    			    	arenap.remove(ap);
 			    			    	
 							    	ap.teleport(t2);
@@ -1539,20 +1473,9 @@ public class Main extends JavaPlugin implements Listener{
 								arenaspawn.remove(arena);
 							} // end of if(round < max_round)
 						}else{ // ROUNDS OR NORMAL:
-							p.sendMessage(getConfig().getString("strings.won").replaceAll("&", "§"));
-							if(getConfig().getBoolean("config.announce_winner")){
-								getServer().broadcastMessage("§3" + p.getName() + " won a HorseRace!");
-							}
-							if(getConfig().getInt("stats." + p.getName() + ".won") > 0){
-								getConfig().set("stats." + p.getName() + ".won", getConfig().getInt("stats." + p.getName() + ".won") + 1);
-								this.saveConfig();
-							}else{
-								getConfig().set("stats." + p.getName() + ".won", 1);
-								this.saveConfig();
-							}
-							if(getConfig().getBoolean(ArenaConfigStrings.CONFIG_MYSQL_ENABLED)){
-								this.MySQLUpdateStats(p.getName(), "win");
-							}
+							sendWin(p);
+							announceWinner(p);
+							updateWinStats(p);
 							
 							gamestarted.put(aren, false);
 							
@@ -1582,30 +1505,16 @@ public class Main extends JavaPlugin implements Listener{
 							
 		                    p.getInventory().setContents(pinv.get(p));
 		                    
-		                    if(getConfig().getBoolean("config.use_economy")){
-								//give money
-								as.ManageMoney(p, "win");
-							}else{
-								//give item
-								p.getInventory().addItem(new ItemStack(Material.getMaterial(getConfig().getInt("config.itemid")), getConfig().getInt("config.itemamount")));
-								p.updateInventory();
-							}
-		                    
 							ArrayList<Player> arenaplayers = new ArrayList<Player>(getKeysByValue(arenap, arena));
+		                    giveWinReward(p, arenaplayers);
+		                    
 							for(Player ap : arenaplayers){
 								ap.getVehicle().remove();
 								// tp away
 		    			    	arenap.remove(ap);
 		    			    	
-		    			    	ap.sendMessage(getConfig().getString("strings.lost").replaceAll("&", "§"));
-		
-		    			    	if(getConfig().getInt("stats." + ap.getName() + ".lost") > 0){
-									getConfig().set("stats." + ap.getName() + ".lost", getConfig().getInt("stats." + ap.getName() + ".lost") + 1);
-									this.saveConfig();
-		    			    	}else{
-									getConfig().set("stats." + ap.getName() + ".lost", 1);
-									this.saveConfig();
-								}
+		    			    	sendLost(ap);
+						    	updateLoseStats(ap);
 		    			    	
 						    	ap.teleport(t2);
 		    			    	
@@ -1620,10 +1529,6 @@ public class Main extends JavaPlugin implements Listener{
 						    	
 						    	as.handleSign(s_, aren);
 						    	ap.getInventory().setContents(pinv.get(ap));
-						    	
-						    	if(getConfig().getBoolean(ArenaConfigStrings.CONFIG_MYSQL_ENABLED)){
-									this.MySQLUpdateStats(ap.getName(), "lose");
-								}
 							}
 							if(s_ != null){
 								s_.setLine(3, Integer.toString(0) + "/" + Integer.toString(size));
@@ -1662,6 +1567,110 @@ public class Main extends JavaPlugin implements Listener{
 					} // END OF if (arena_cycling){}else{}
 				} // END OF if(crossed_line){}
 			}
+		}
+	}
+
+
+	private void announceWinner(final Player p) {
+		if(getConfig().getBoolean("config.announce_winner")){
+			getServer().broadcastMessage(getConfig().getString("strings.ann_broadcast").replaceAll("&", "§").replace("%player%", p.getDisplayName()));
+		}
+	}
+
+
+	private void announceWinnerByTitle(final Player p, String winnerName, long money) {
+		if(getConfig().getBoolean("config.announce_title")){
+			Effects.playTitle(p, getConfig().getString("strings.ann_title").replaceAll("&", "§").replace("%player%", p.getDisplayName()).replace("%money%", String.valueOf(money)), 0);
+			Effects.playTitle(p, getConfig().getString("strings.ann_subtitle").replaceAll("&", "§").replace("%player%", p.getDisplayName()).replace("%money%", String.valueOf(money)), 1);
+		}
+	}
+
+
+	private void updateLoseStats(Player ap) {
+		if(getConfig().getInt("stats." + ap.getName() + ".lost") > 0){
+			getConfig().set("stats." + ap.getName() + ".lost", getConfig().getInt("stats." + ap.getName() + ".lost") + 1);
+			this.saveConfig();
+		}else{
+			getConfig().set("stats." + ap.getName() + ".lost", 1);
+			this.saveConfig();
+		}
+		if(getConfig().getBoolean(ArenaConfigStrings.CONFIG_MYSQL_ENABLED)){
+			this.MySQLUpdateStats(ap.getName(), "lose");
+		}
+	}
+
+
+	private void updateWinStats(final Player p) {
+		if(getConfig().getInt("stats." + p.getName() + ".won") > 0){
+			getConfig().set("stats." + p.getName() + ".won", getConfig().getInt("stats." + p.getName() + ".won") + 1);
+			this.saveConfig();
+		}else{
+			getConfig().set("stats." + p.getName() + ".won", 1);
+			this.saveConfig();
+		}
+		if(getConfig().getBoolean(ArenaConfigStrings.CONFIG_MYSQL_ENABLED)){
+			this.MySQLUpdateStats(p.getName(), "win");
+		}
+	}
+
+
+	private void giveWinReward(final Player p, List<Player> allPlayers) {
+		if(getConfig().getBoolean("config.use_economy")){
+			//give money
+			double win = as.ManageMoneyWin(p);
+			if (win > 0)
+			{
+				announceWinnerByTitle(p, p.getDisplayName(), Math.round(win));
+				for (Player p_ : allPlayers)
+				{
+					if (p_ != p)
+					{
+						announceWinnerByTitle(p_, p.getDisplayName(), Math.round(win));
+					}
+				}
+			}
+		}else{
+			//give item
+			p.getInventory().addItem(new ItemStack(Material.getMaterial(getConfig().getInt("config.itemid")), getConfig().getInt("config.itemamount")));
+			p.updateInventory();
+		}
+	}
+
+
+	private void sendLost(Player ap) {
+		ap.sendMessage(getConfig().getString("strings.lost").replaceAll("&", "§"));
+	}
+
+
+	private void sendWin(final Player p) {
+		p.sendMessage(getConfig().getString("strings.won").replaceAll("&", "§"));
+	}
+
+
+	private void sendWinCycle(final Player p) {
+		p.sendMessage(getConfig().getString("strings.won_cycle").replaceAll("&", "§"));
+	}
+
+
+	private void sendWinRound(final Player p) {
+		p.sendMessage(getConfig().getString("strings.won_round").replaceAll("&", "§"));
+	}
+
+
+	private boolean isAwayFromSpawn(Location currentspawn, Location playerloc) {
+		return playerloc.getX() - currentspawn.getX() > 2 || playerloc.getX() - currentspawn.getX() < -2  || playerloc.getZ() - currentspawn.getZ() > 2 || playerloc.getZ() - currentspawn.getZ() < -2;
+	}
+
+
+	private void respawnIfVehicle(final Player p, Location currentspawn) {
+		if(p.isInsideVehicle()){
+			p.getVehicle().remove();
+			p.teleport(currentspawn);
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+				public void run(){        	                	
+		        	as.spawnHorse(currentspawn, p);
+				}
+			}, 10);
 		}
 	}
 	

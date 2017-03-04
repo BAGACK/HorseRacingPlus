@@ -5,11 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.logging.Level;
-
-import net.milkbowl.vault.economy.EconomyResponse;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -25,14 +21,13 @@ import org.bukkit.entity.Horse.Style;
 import org.bukkit.entity.Horse.Variant;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
-import org.bukkit.scheduler.BukkitTask;
 
 import com.comze_instancelabs.minigamesapi.MinecraftVersionsType;
 import com.comze_instancelabs.minigamesapi.MinigamesAPI;
+
+import net.milkbowl.vault.economy.EconomyResponse;
 
 
 public class ArenaSystem {
@@ -222,11 +217,9 @@ public class ArenaSystem {
 	/***
 	 * Manages_the money of a player
 	 * @param p Player
-	 * @param action The action to do: entry, win
 	 * @return True if action could be finished successfully, false if not
 	 */
-	public boolean ManageMoney(Player p, String action){
-		if(action.equalsIgnoreCase("entry")){
+	public boolean ManageMoneyEntry(Player p){
 			if(main.economy){
 	 			if(main.gambling){
 	     			if(main.econ.getBalance(p.getName()) < 10){
@@ -242,26 +235,37 @@ public class ArenaSystem {
 	 			}
 			}
 	 		return true;
-		}else if(action.equalsIgnoreCase("win")){
+		
+	}
+	
+	
+	/***
+	 * Manages_the money of a player
+	 * @param p Player
+	 * @return the money amount
+	 */
+	public double ManageMoneyWin(Player p){
 			if(main.economy){
+				double amount = 0;
 				if(main.gambling){
-					EconomyResponse r = main.econ.depositPlayer(p.getName(), main.getConfig().getDouble("config.entry_money") * main.arenap.size());
+					amount = main.getConfig().getDouble("config.entry_money") * main.arenap.size();
+					EconomyResponse r = main.econ.depositPlayer(p.getName(), amount);
         			if(!r.transactionSuccess()) {
                     	p.sendMessage(String.format("An error occured: %s", r.errorMessage));
-                    	return false;
                     }
 				}else{
-					EconomyResponse r = main.econ.depositPlayer(p.getName(), main.getConfig().getDouble("config.normal_money_reward"));
+					amount = main.getConfig().getDouble("config.normal_money_reward");
+					EconomyResponse r = main.econ.depositPlayer(p.getName(), amount);
         			if(!r.transactionSuccess()) {
                     	p.sendMessage(String.format("An error occured: %s", r.errorMessage));
-                        //sender.sendMessage(String.format("You were given %s_and now have %s", econ.format(r.amount), econ.format(r.balance)));
                     }
 				}
 				
 				for(Player p_ : main.bet_player.keySet()){
 	 				if(p == main.bet_player.get(p_)){
-	 					p_.sendMessage("§2Nice bet!");
-	 					EconomyResponse r = main.econ.depositPlayer(p_.getName(), main.bet_amount.get(p_) * 2);
+	 					final int betwin = main.bet_amount.get(p_) * 2;
+	 					p_.sendMessage(main.getConfig().getString("strings.bet_won").replaceAll("&", "§").replace("%money%", String.valueOf(betwin)));
+						EconomyResponse r = main.econ.depositPlayer(p_.getName(), betwin);
 	        			if(!r.transactionSuccess()) {
 	                    	p.sendMessage(String.format("An error occured: %s", r.errorMessage));
 	                    }
@@ -269,11 +273,9 @@ public class ArenaSystem {
 						main.bet_amount.remove(p_);
 	 				}
 	 			}
+				return amount;
 	    	}
-			return true;
-		}
- 		
-		return false;
+			return 0;
 	}
 	
 	
