@@ -1,4 +1,4 @@
-HorseRacingPlus [![Build Status](http://www.minigameslib.de/build.php?app=HorseRacingPlus&major=1)](http://www.minigameslib.de/buildref.php?app=HorseRacingPlus&major=1)
+HorseRacingPlus [![Build Status](http://www.minigameslib.de/build.png?app=HorseRacingPlus&major=1)](http://www.minigameslib.de/buildref.php?app=HorseRacingPlus&major=1)
 ===============
 
 HorseRacingPlus game for spigot-minecraft using [MinigamesAPI](https://github.com/MysticCity/MinigamesAPI).
