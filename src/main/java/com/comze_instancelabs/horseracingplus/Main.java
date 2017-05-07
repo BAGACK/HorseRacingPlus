@@ -117,8 +117,14 @@ public class Main extends JavaPlugin implements Listener{
 		
 		getConfig().addDefault(ArenaConfigStrings.CONFIG_MYSQL_ENABLED, false);
 		getConfig().addDefault(ArenaConfigStrings.CONFIG_MYSQL_HOST, "localhost");
-		getConfig().addDefault(ArenaConfigStrings.CONFIG_MYSQL_DATABASE, "database");
+		getConfig().addDefault(ArenaConfigStrings.CONFIG_MYSQL_DATABASE, "mcminigames");
 		getConfig().addDefault(ArenaConfigStrings.CONFIG_MYSQL_USER, "root");
+        getConfig().addDefault(ArenaConfigStrings.CONFIG_MYSQL_PW, "root");
+		
+		getConfig().addDefault(ArenaConfigStrings.CONFIG_SQLITE_ENABLED, false);
+		getConfig().addDefault(ArenaConfigStrings.CONFIG_SQLITE_DATABASE, "mcminigames.sqlite");
+        getConfig().addDefault(ArenaConfigStrings.CONFIG_SQLITE_USER, "root");
+        getConfig().addDefault(ArenaConfigStrings.CONFIG_SQLITE_PW, "root");
 		if (getConfig().isSet("mysql.password"))
 		{
 			getConfig().addDefault(ArenaConfigStrings.CONFIG_MYSQL_PW, getConfig().get("mysql.password"));
@@ -249,7 +255,7 @@ public class Main extends JavaPlugin implements Listener{
 	        }	
         }
         
-        this.msql = new MainSQL(this, true);
+        this.msql = new MainSQL(this);
 	}
 
 
@@ -1594,9 +1600,7 @@ public class Main extends JavaPlugin implements Listener{
 			getConfig().set("stats." + ap.getName() + ".lost", 1);
 			this.saveConfig();
 		}
-		if(getConfig().getBoolean(ArenaConfigStrings.CONFIG_MYSQL_ENABLED)){
-			this.MySQLUpdateStats(ap.getName(), "lose");
-		}
+		this.MySQLUpdateStats(ap.getName(), "lose");
 	}
 
 
@@ -1608,9 +1612,7 @@ public class Main extends JavaPlugin implements Listener{
 			getConfig().set("stats." + p.getName() + ".won", 1);
 			this.saveConfig();
 		}
-		if(getConfig().getBoolean(ArenaConfigStrings.CONFIG_MYSQL_ENABLED)){
-			this.MySQLUpdateStats(p.getName(), "win");
-		}
+		this.MySQLUpdateStats(p.getName(), "win");
 	}
 
 
