@@ -109,6 +109,10 @@ public class ArenaSystem {
 	 */
 	public void logMessage(String msg){
 		File yml = new File("plugins/HorseRacingPlus/plugin_log.txt");
+		if (!yml.getParentFile().exists())
+		{
+			yml.getParentFile().mkdirs();
+		}
         if (!yml.exists()){
         	try {
 				yml.createNewFile();
@@ -178,7 +182,14 @@ public class ArenaSystem {
         	}
         	for(Player p : main.arenap.keySet()){
         		if(main.arenap.get(p).equalsIgnoreCase(arena)){
-        			p.playSound(p.getLocation(), Sound.ENTITY_CAT_AMBIENT, 1, 0);
+        			if (MinigamesAPI.SERVER_VERSION.isBelow(MinecraftVersionsType.V1_9))
+					{
+            			p.playSound(p.getLocation(), Sound.valueOf("CAT_MEOW"), 1, 0);
+					}
+        			else
+        			{
+            			p.playSound(p.getLocation(), Sound.ENTITY_CAT_AMBIENT, 1, 0);
+        			}
         		}
         	}
         	
